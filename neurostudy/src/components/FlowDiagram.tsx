@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import mermaid from 'mermaid';
 
 mermaid.initialize({
@@ -21,6 +21,14 @@ mermaid.initialize({
 
 export default function FlowDiagram({ mermaidCode }: { mermaidCode: string }) {
   const ref = useRef<HTMLDivElement>(null);
+  const [copied, setCopied] = useState(false);
+
+  function handleCopy() {
+    navigator.clipboard.writeText(mermaidCode).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  }
 
   useEffect(() => {
     if (!ref.current || !mermaidCode) return;
@@ -37,24 +45,42 @@ export default function FlowDiagram({ mermaidCode }: { mermaidCode: string }) {
 
   return (
     <div style={{
-      padding: 24,
       background: 'var(--surface)',
       border: '1px solid var(--border)',
       borderRadius: 16,
-      overflowX: 'auto',
+      overflow: 'hidden',
     }}>
-      <div
-        ref={ref}
-        style={{
-          minHeight: 160,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          color: 'var(--text-muted)',
-          fontFamily: 'var(--font-body)',
-          fontSize: 13,
-        }}
-      >Rendering diagram…</div>
+      {/* Toolbar */}
+      <div style={{
+        padding: '10px 16px',
+        borderBottom: '1px solid var(--border)',
+        display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+      }}>
+        <span style={{ fontFamily: 'var(--font-body)', fontSize: 11, color: 'var(--text-muted)', letterSpacing: '0.06em' }}>
+          Mermaid.js
+        </span>
+        <button
+          type="button"
+          onClick={handleCopy}
+          style={{
+            background: copied ? 'rgba(34,197,94,0.1)' : 'var(--surface-2)',
+            border: copied ? '1px solid rgba(34,197,94,0.3)' : '1px solid var(--border)',
+            borderRadius: 6, cursor: 'pointer', padding: '4px 10px',
+            fontFamily: 'var(--font-body)', fontSize: 11, fontWeight: 500,
+            color: copied ? '#4ade80' : 'var(--text-muted)',
+            transition: 'all 0.2s',
+          }}
+        >
+          {copied ? '✓ Copied' : 'Copy syntax'}
+        </button>
+      </div>
+      {/* Diagram */}
+      <div style={{ padding: 24, overflowX: 'auto' }}>
+        <div ref={ref} style={{
+          minHeight: 160, display: 'flex', alignItems: 'center', justifyContent: 'center',
+          color: 'var(--text-muted)', fontFamily: 'var(--font-body)', fontSize: 13,
+        }}>Rendering diagram…</div>
+      </div>
     </div>
   );
 }

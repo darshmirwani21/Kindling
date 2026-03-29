@@ -1,6 +1,6 @@
 export type StudyFormat = "flashcards" | "summary" | "qa" | "flowdiagram";
 
-export type InputType = "youtube" | "pdf" | "article";
+export type InputType = "youtube" | "pdf" | "article" | "paste";
 
 export interface Flashcard {
   front: string;

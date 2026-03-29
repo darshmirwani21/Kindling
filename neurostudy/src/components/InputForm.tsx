@@ -6,7 +6,7 @@ import MicroModeToggle from './MicroModeToggle';
 type Format = 'flashcards' | 'summary' | 'qa' | 'flowdiagram';
 
 interface InputFormProps {
-  onSubmit: (data: { url: string; file: File | null; format: Format; microMode: boolean }) => void;
+  onSubmit: (data: { url: string; file: File | null; format: Format; microMode: boolean; pasteText?: string }) => void;
   loading: boolean;
 }
 
@@ -25,27 +25,97 @@ export default function InputForm({ onSubmit, loading }: InputFormProps) {
   const [format, setFormat]   = useState<Format>('flashcards');
   const [micro, setMicro]     = useState(false);
   const [urlFocus, setUrlFocus] = useState(false);
+  const [inputType, setInputType] = useState<'youtube' | 'article' | 'pdf' | 'paste'>('youtube');
+  const [pasteText, setPasteText] = useState('');
   const fileRef = useRef<HTMLInputElement>(null);
 
-  const canSubmit = (url.trim() !== '' || file !== null) && !loading;
+  const canSubmit = (
+    (inputType === 'youtube' && url.trim() !== '') ||
+    (inputType === 'article' && url.trim() !== '') ||
+    (inputType === 'pdf' && file !== null) ||
+    (inputType === 'paste' && pasteText.trim().length > 50)
+  ) && !loading;
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 28 }}>
 
-      {/* ── URL input ──────────────────────────────────── */}
+      {/* ── Input type selector ─────────────────────────── */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-        <label
-          style={{
-            fontFamily: 'var(--font-body)',
-            fontSize: 11,
-            fontWeight: 600,
-            letterSpacing: '0.1em',
-            textTransform: 'uppercase',
-            color: 'var(--text-muted)',
-          }}
-        >
-          Paste a link
+        <label style={{
+          fontFamily: 'var(--font-body)',
+          fontSize: 11,
+          fontWeight: 600,
+          letterSpacing: '0.1em',
+          textTransform: 'uppercase',
+          color: 'var(--text-muted)',
+        }}>
+          Input source
         </label>
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(4, 1fr)',
+          gap: 6,
+          background: 'var(--surface-2)',
+          padding: 5,
+          borderRadius: 12,
+          border: borderStyle,
+        }}>
+          {[
+            { id: 'youtube', label: 'YouTube', icon: '🎥' },
+            { id: 'article', label: 'Web Article', icon: '🌐' },
+            { id: 'pdf', label: 'PDF Upload', icon: '📄' },
+            { id: 'paste', label: 'Paste Text', icon: '📋' },
+          ].map((type) => {
+            const active = inputType === type.id;
+            return (
+              <button
+                key={type.id}
+                type="button"
+                onClick={() => setInputType(type.id as any)}
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  gap: 4,
+                  padding: '10px 6px',
+                  borderRadius: 8,
+                  border: 'none',
+                  cursor: 'pointer',
+                  transition: 'all 0.18s',
+                  background: active ? 'var(--surface-3)' : 'transparent',
+                  boxShadow: active ? '0 0 0 1px var(--border-hover), 0 2px 8px rgba(255,91,29,0.1)' : 'none',
+                }}
+              >
+                <span style={{ fontSize: 18, lineHeight: 1 }}>{type.icon}</span>
+                <span style={{
+                  fontFamily: 'var(--font-body)',
+                  fontSize: 11,
+                  fontWeight: active ? 600 : 400,
+                  color: active ? 'var(--ember)' : 'var(--text-secondary)',
+                  transition: 'color 0.18s',
+                  whiteSpace: 'nowrap',
+                }}>{type.label}</span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* ── URL input ──────────────────────────────────── */}
+      {inputType !== 'paste' && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+          <label
+            style={{
+              fontFamily: 'var(--font-body)',
+              fontSize: 11,
+              fontWeight: 600,
+              letterSpacing: '0.1em',
+              textTransform: 'uppercase',
+              color: 'var(--text-muted)',
+            }}
+          >
+            {inputType === 'youtube' ? 'Paste a link' : 'Paste a link'}
+          </label>
         <div
           style={{
             display: 'flex',
@@ -160,6 +230,30 @@ export default function InputForm({ onSubmit, loading }: InputFormProps) {
         />
       </button>
 
+      {/* ── Paste textarea ─────────────────────────── */}
+      {inputType === 'paste' && (
+        <textarea
+          placeholder="Paste any text here — article, lecture notes, textbook excerpt…"
+          value={pasteText}
+          onChange={(e) => setPasteText(e.target.value)}
+          rows={6}
+          style={{
+            width: '100%',
+            background: 'var(--surface-2)',
+            border: pasteText ? '1px solid var(--ember)' : '1px solid var(--border)',
+            borderRadius: 12,
+            padding: '14px 16px',
+            fontFamily: 'var(--font-body)',
+            fontSize: 14,
+            color: 'var(--text-primary)',
+            resize: 'vertical',
+            outline: 'none',
+            transition: 'border-color 0.2s',
+            lineHeight: 1.6,
+          }}
+        />
+      )}
+
       {/* ── Format selector — horizontal pill tabs ─────── */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
         <label style={{
@@ -222,7 +316,7 @@ export default function InputForm({ onSubmit, loading }: InputFormProps) {
         <MicroModeToggle enabled={micro} onChange={setMicro} />
         <button
           type="button"
-          onClick={() => onSubmit({ url, file, format, microMode: micro })}
+          onClick={() => onSubmit({ url, file, format, microMode: micro, pasteText: inputType === 'paste' ? pasteText : undefined })}
           disabled={!canSubmit}
           className={canSubmit && !loading ? 'btn-ember-idle' : ''}
           style={{

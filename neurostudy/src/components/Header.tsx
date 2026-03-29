@@ -1,4 +1,8 @@
-export default function Header() {
+interface HeaderProps {
+  onHistoryOpen?: () => void;
+}
+
+export default function Header({ onHistoryOpen }: HeaderProps) {
   return (
     <header
       style={{ position: 'relative', zIndex: 10 }}
@@ -32,6 +36,32 @@ export default function Header() {
           <span style={{ color: 'var(--ember)' }}>ling</span>
         </span>
       </div>
+
+      {/* History button */}
+      {onHistoryOpen && (
+        <button
+          type="button"
+          onClick={onHistoryOpen}
+          title="Recent sessions"
+          style={{
+            background: 'none', border: '1px solid var(--border)',
+            borderRadius: 8, cursor: 'pointer', padding: '6px 10px',
+            color: 'var(--text-secondary)', transition: 'all 0.15s',
+            display: 'flex', alignItems: 'center', gap: 6,
+            fontFamily: 'var(--font-body)', fontSize: 12,
+          }}
+          onMouseEnter={(e) => {
+            (e.currentTarget as HTMLButtonElement).style.borderColor = 'var(--border-hover)';
+            (e.currentTarget as HTMLButtonElement).style.color = 'var(--ember)';
+          }}
+          onMouseLeave={(e) => {
+            (e.currentTarget as HTMLButtonElement).style.borderColor = 'var(--border)';
+            (e.currentTarget as HTMLButtonElement).style.color = 'var(--text-secondary)';
+          }}
+        >
+          🕐 History
+        </button>
+      )}
 
       {/* Tagline pill */}
       <span
