@@ -10,36 +10,36 @@ export default function FlashcardDeck({ cards }: { cards: Flashcard[] }) {
 
   return (
     <div className="space-y-8">
-      <div className="flex items-center justify-between text-sm text-zinc-500">
+      <div className="flex items-center justify-between text-sm text-stone-500">
         <span>
-          Card <span className="font-medium text-zinc-300">{index + 1}</span> of{" "}
-          <span className="font-medium text-zinc-300">{cards.length}</span>
+          Card <span className="font-medium text-stone-700">{index + 1}</span> of{" "}
+          <span className="font-medium text-stone-700">{cards.length}</span>
         </span>
-        <span className="rounded-full bg-white/5 px-2 py-0.5 text-xs text-zinc-500">Tap to flip</span>
+        <span className="rounded-full bg-stone-100 px-2 py-0.5 text-xs text-stone-500">Tap to flip</span>
       </div>
 
       <div className="[perspective:1200px]">
         <button
           type="button"
           onClick={() => setFlipped(!flipped)}
-          className="relative min-h-[14rem] w-full text-left outline-none focus-visible:ring-2 focus-visible:ring-violet-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-950"
+          className="relative min-h-[14rem] w-full text-left outline-none focus-visible:ring-2 focus-visible:ring-orange-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
         >
           <div
             className="relative min-h-[14rem] w-full transition-transform duration-500 [transform-style:preserve-3d]"
             style={{ transform: flipped ? "rotateY(180deg)" : "rotateY(0deg)" }}
           >
-            <div className="absolute inset-0 flex min-h-[14rem] flex-col items-center justify-center rounded-3xl border border-white/10 bg-gradient-to-br from-zinc-800/95 to-zinc-950/95 p-8 text-center shadow-xl shadow-black/40 [backface-visibility:hidden]">
-              <p className="mb-3 text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-violet-400/90">
+            <div className="absolute inset-0 flex min-h-[14rem] flex-col items-center justify-center rounded-2xl border border-stone-200 bg-white p-8 text-center shadow-sm [backface-visibility:hidden]">
+              <p className="mb-3 text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-orange-500">
                 Question
               </p>
-              <p className="text-pretty text-lg font-medium leading-snug text-zinc-100 sm:text-xl">{card.front}</p>
-              <p className="mt-6 text-xs text-zinc-500">Tap to reveal answer</p>
+              <p className="text-pretty text-lg font-medium leading-snug text-stone-900 sm:text-xl">{card.front}</p>
+              <p className="mt-6 text-xs text-stone-500">Tap to reveal answer</p>
             </div>
-            <div className="absolute inset-0 flex min-h-[14rem] flex-col items-center justify-center rounded-3xl border border-violet-500/25 bg-gradient-to-br from-violet-950/60 to-zinc-950/95 p-8 text-center shadow-xl shadow-violet-950/20 [backface-visibility:hidden] [transform:rotateY(180deg)]">
-              <p className="mb-3 text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-fuchsia-400/90">
+            <div className="absolute inset-0 flex min-h-[14rem] flex-col items-center justify-center rounded-2xl border border-orange-200 bg-orange-50 p-8 text-center shadow-sm [backface-visibility:hidden] [transform:rotateY(180deg)]">
+              <p className="mb-3 text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-orange-600">
                 Answer
               </p>
-              <p className="text-pretty text-lg font-medium leading-relaxed text-zinc-100 sm:text-xl">{card.back}</p>
+              <p className="text-pretty text-lg font-medium leading-relaxed text-stone-900 sm:text-xl">{card.back}</p>
             </div>
           </div>
         </button>
@@ -53,7 +53,7 @@ export default function FlashcardDeck({ cards }: { cards: Flashcard[] }) {
             setFlipped(false);
           }}
           disabled={index === 0}
-          className="flex-1 rounded-2xl border border-white/10 bg-zinc-900/80 py-3.5 text-sm font-medium text-zinc-300 transition hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-35"
+          className="flex-1 rounded-xl border border-stone-200 bg-white py-3.5 text-sm font-medium text-stone-600 transition hover:bg-stone-50 disabled:cursor-not-allowed disabled:opacity-35"
         >
           ← Previous
         </button>
@@ -64,7 +64,7 @@ export default function FlashcardDeck({ cards }: { cards: Flashcard[] }) {
             setFlipped(false);
           }}
           disabled={index === cards.length - 1}
-          className="flex-1 rounded-2xl bg-gradient-to-r from-violet-600 to-fuchsia-600 py-3.5 text-sm font-semibold text-white shadow-lg shadow-violet-900/30 transition hover:from-violet-500 hover:to-fuchsia-500 disabled:cursor-not-allowed disabled:opacity-35"
+          className="flex-1 rounded-xl bg-orange-500 py-3.5 text-sm font-semibold text-white shadow-sm hover:bg-orange-600 disabled:cursor-not-allowed disabled:opacity-35"
         >
           Next →
         </button>

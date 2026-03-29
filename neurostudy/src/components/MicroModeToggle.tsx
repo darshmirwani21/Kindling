@@ -1,34 +1,30 @@
-"use client";
-
-interface Props {
+interface MicroModeToggleProps {
   enabled: boolean;
   onChange: (val: boolean) => void;
 }
 
-export default function MicroModeToggle({ enabled, onChange }: Props) {
+export default function MicroModeToggle({ enabled, onChange }: MicroModeToggleProps) {
   return (
-    <div className="flex items-center justify-between gap-4 rounded-2xl border border-white/10 bg-zinc-950/50 px-4 py-4">
-      <div className="min-w-0">
-        <p className="text-sm font-medium text-zinc-100">✂️ Micro mode</p>
-        <p className="mt-0.5 text-xs leading-relaxed text-zinc-500">
-          Shorter chunks, simpler wording, tighter focus.
-        </p>
-      </div>
+    <div className="flex items-center gap-3">
+      <span className="text-sm font-medium text-stone-600">Micro Mode</span>
       <button
         type="button"
         role="switch"
         aria-checked={enabled}
         onClick={() => onChange(!enabled)}
-        className={`relative h-7 w-12 shrink-0 rounded-full transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-500 ${
-          enabled ? "bg-violet-600" : "bg-zinc-700"
+        className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 ${
+          enabled ? 'bg-orange-500' : 'bg-stone-300'
         }`}
       >
         <span
-          className={`absolute top-1 size-5 rounded-full bg-white shadow transition-transform ${
-            enabled ? "translate-x-6" : "translate-x-1"
+          className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
+            enabled ? 'translate-x-5' : 'translate-x-0'
           }`}
         />
       </button>
+      {enabled && (
+        <span className="text-xs text-orange-500 font-medium">On</span>
+      )}
     </div>
   );
 }

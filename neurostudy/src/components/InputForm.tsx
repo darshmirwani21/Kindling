@@ -1,169 +1,109 @@
-"use client";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { StudyFormat, InputType } from "@/lib/types";
-import MicroModeToggle from "./MicroModeToggle";
+'use client';
 
-const pillActive =
-  "bg-violet-600 text-white shadow-lg shadow-violet-600/25 ring-1 ring-white/10";
-const pillIdle =
-  "bg-zinc-900/80 text-zinc-300 ring-1 ring-white/5 hover:bg-zinc-800/90 hover:ring-white/10";
+import { useState } from 'react';
+import MicroModeToggle from './MicroModeToggle';
 
-export default function InputForm() {
-  const router = useRouter();
-  const [url, setUrl] = useState("");
-  const [inputType, setInputType] = useState<InputType>("youtube");
-  const [format, setFormat] = useState<StudyFormat>("flashcards");
-  const [microMode, setMicroMode] = useState(false);
-  const [pdfFile, setPdfFile] = useState<File | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+type Format = 'flashcards' | 'summary' | 'qa' | 'flowdiagram';
 
-  async function handleSubmit() {
-    setLoading(true);
-    setError("");
+interface InputFormProps {
+  onSubmit: (data: {
+    url: string;
+    file: File | null;
+    format: Format;
+    microMode: boolean;
+  }) => void;
+  loading: boolean;
+}
 
-    try {
-      let ingestRes;
+const FORMAT_OPTIONS: { id: Format; label: string; icon: string }[] = [
+  { id: 'flashcards', label: 'Flashcards', icon: '🃏' },
+  { id: 'summary',    label: 'Summary',    icon: '📝' },
+  { id: 'qa',         label: 'Q&A',        icon: '💬' },
+  { id: 'flowdiagram',label: 'Flow Diagram',icon: '🔀' },
+];
 
-      if (inputType === "pdf" && pdfFile) {
-        const formData = new FormData();
-        formData.append("file", pdfFile);
-        ingestRes = await fetch("/api/ingest", { method: "POST", body: formData });
-      } else {
-        ingestRes = await fetch("/api/ingest", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ url, inputType }),
-        });
-      }
+export default function InputForm({ onSubmit, loading }: InputFormProps) {
+  const [url, setUrl]           = useState('');
+  const [file, setFile]         = useState<File | null>(null);
+  const [format, setFormat]     = useState<Format>('flashcards');
+  const [microMode, setMicro]   = useState(false);
 
-      const ingestData = await ingestRes.json();
-      if (!ingestRes.ok) throw new Error(ingestData.error);
-
-      const synthRes = await fetch("/api/synthesize", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          rawText: ingestData.rawText,
-          format,
-          microMode,
-          sourceTitle: ingestData.sourceTitle,
-        }),
-      });
-
-      const synthData = await synthRes.json();
-      if (!synthRes.ok) throw new Error(synthData.error);
-
-      sessionStorage.setItem("studyOutput", JSON.stringify(synthData));
-      router.push("/results");
-    } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : "Something went wrong");
-    } finally {
-      setLoading(false);
-    }
-  }
+  const handleSubmit = () => {
+    if (!url && !file) return;
+    onSubmit({ url, file, format, microMode });
+  };
 
   return (
-    <div className="rounded-3xl border border-white/10 bg-zinc-900/40 p-6 shadow-2xl shadow-black/40 backdrop-blur-md sm:p-8">
-      <div className="space-y-8">
-        <section className="space-y-3">
-          <p className="text-xs font-semibold uppercase tracking-wider text-zinc-500">Source</p>
-          <div className="flex flex-wrap gap-2">
-            {(["youtube", "article", "pdf"] as InputType[]).map((type) => (
-              <button
-                key={type}
-                type="button"
-                onClick={() => setInputType(type)}
-                className={`rounded-full px-4 py-2 text-sm font-medium capitalize transition-all ${
-                  inputType === type ? pillActive : pillIdle
-                }`}
-              >
-                {type === "youtube" ? "YouTube" : type === "article" ? "Web article" : "PDF upload"}
-              </button>
-            ))}
-          </div>
-        </section>
+    <div className="w-full max-w-2xl mx-auto flex flex-col gap-6">
 
-        {inputType === "pdf" ? (
-          <label className="block cursor-pointer space-y-2">
-            <span className="text-xs font-semibold uppercase tracking-wider text-zinc-500">File</span>
-            <input
-              type="file"
-              accept=".pdf,application/pdf"
-              onChange={(e) => setPdfFile(e.target.files?.[0] || null)}
-              className="w-full cursor-pointer rounded-2xl border border-dashed border-white/15 bg-zinc-950/50 px-4 py-6 text-sm text-zinc-300 transition-colors file:mr-4 file:cursor-pointer file:rounded-full file:border-0 file:bg-violet-600 file:px-5 file:py-2 file:text-sm file:font-semibold file:text-white hover:border-violet-500/40"
-            />
-            {pdfFile && (
-              <p className="text-xs text-zinc-500">
-                Selected: <span className="text-zinc-300">{pdfFile.name}</span>
-              </p>
-            )}
-          </label>
-        ) : (
-          <label className="block space-y-2">
-            <span className="text-xs font-semibold uppercase tracking-wider text-zinc-500">URL</span>
-            <input
-              type="url"
-              placeholder={
-                inputType === "youtube" ? "https://www.youtube.com/watch?v=…" : "https://…"
-              }
-              value={url}
-              onChange={(e) => setUrl(e.target.value)}
-              className="w-full rounded-2xl border border-white/10 bg-zinc-950/60 px-4 py-3.5 text-zinc-100 placeholder:text-zinc-600 outline-none transition focus:border-violet-500/50 focus:ring-2 focus:ring-violet-500/30"
-            />
-          </label>
-        )}
+      {/* URL Input */}
+      <div className="flex flex-col gap-1.5">
+        <label className="text-sm font-medium text-stone-700">
+          Paste a link
+        </label>
+        <input
+          type="url"
+          placeholder="YouTube, article, or any webpage URL..."
+          value={url}
+          onChange={(e) => setUrl(e.target.value)}
+          className="w-full rounded-lg border border-stone-300 bg-white px-4 py-3 text-sm text-stone-900 placeholder:text-stone-400 focus:border-orange-400 focus:outline-none focus:ring-2 focus:ring-orange-100 transition"
+        />
+      </div>
 
-        <section className="space-y-3">
-          <p className="text-xs font-semibold uppercase tracking-wider text-zinc-500">Output format</p>
-          <div className="grid grid-cols-2 gap-2 sm:grid-cols-2">
-            {(["flashcards", "summary", "qa", "flowdiagram"] as StudyFormat[]).map((f) => (
-              <button
-                key={f}
-                type="button"
-                onClick={() => setFormat(f)}
-                className={`rounded-2xl px-4 py-3 text-left text-sm font-medium transition-all ${
-                  format === f ? pillActive : pillIdle
-                }`}
-              >
-                {f === "flashcards"
-                  ? "🃏 Flashcards"
-                  : f === "summary"
-                    ? "📋 Summary"
-                    : f === "qa"
-                      ? "🎯 Q&A quiz"
-                      : "🗺️ Flow diagram"}
-              </button>
-            ))}
-          </div>
-        </section>
+      {/* Divider */}
+      <div className="flex items-center gap-3 text-xs text-stone-400">
+        <div className="flex-1 h-px bg-stone-200" />
+        or upload a PDF
+        <div className="flex-1 h-px bg-stone-200" />
+      </div>
 
-        <MicroModeToggle enabled={microMode} onChange={setMicroMode} />
+      {/* PDF Upload */}
+      <div>
+        <label className="flex flex-col items-center justify-center w-full h-24 rounded-lg border-2 border-dashed border-stone-300 bg-white cursor-pointer hover:border-orange-400 hover:bg-orange-50 transition">
+          <span className="text-sm text-stone-500">
+            {file ? `📄 ${file.name}` : 'Click to upload PDF'}
+          </span>
+          <input
+            type="file"
+            accept=".pdf"
+            className="hidden"
+            onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+          />
+        </label>
+      </div>
 
-        {error && (
-          <div
-            role="alert"
-            className="rounded-2xl border border-red-500/30 bg-red-950/40 px-4 py-3 text-sm text-red-200"
-          >
-            {error}
-          </div>
-        )}
+      {/* Format Selector — horizontal row */}
+      <div className="flex flex-col gap-1.5">
+        <label className="text-sm font-medium text-stone-700">Output format</label>
+        <div className="grid grid-cols-4 gap-2">
+          {FORMAT_OPTIONS.map((opt) => (
+            <button
+              key={opt.id}
+              type="button"
+              onClick={() => setFormat(opt.id)}
+              className={`flex flex-col items-center justify-center gap-1 rounded-lg border py-3 px-2 text-xs font-medium transition ${
+                format === opt.id
+                  ? 'border-orange-500 bg-orange-50 text-orange-600'
+                  : 'border-stone-200 bg-white text-stone-600 hover:border-orange-300 hover:bg-orange-50'
+              }`}
+            >
+              <span className="text-lg">{opt.icon}</span>
+              {opt.label}
+            </button>
+          ))}
+        </div>
+      </div>
 
+      {/* Bottom row — Micro Mode + Submit */}
+      <div className="flex items-center justify-between">
+        <MicroModeToggle enabled={microMode} onChange={setMicro} />
         <button
           type="button"
           onClick={handleSubmit}
-          disabled={loading || (inputType !== "pdf" && !url) || (inputType === "pdf" && !pdfFile)}
-          className="w-full rounded-2xl bg-gradient-to-r from-violet-600 to-fuchsia-600 py-4 text-base font-semibold text-white shadow-lg shadow-violet-900/40 transition hover:from-violet-500 hover:to-fuchsia-500 disabled:cursor-not-allowed disabled:opacity-40 disabled:shadow-none"
+          disabled={loading || (!url && !file)}
+          className="rounded-lg bg-orange-500 px-6 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-orange-600 disabled:opacity-40 disabled:cursor-not-allowed transition"
         >
-          {loading ? (
-            <span className="inline-flex items-center justify-center gap-2">
-              <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
-              Generating your study set…
-            </span>
-          ) : (
-            "Generate study material"
-          )}
+          {loading ? 'Kindling...' : 'Ignite ✨'}
         </button>
       </div>
     </div>

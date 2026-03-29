@@ -25,10 +25,10 @@ export default function ResultsPage() {
       <NeuroShell>
         <div className="flex min-h-[40vh] flex-col items-center justify-center gap-4 text-center">
           <div
-            className="h-10 w-10 animate-spin rounded-full border-2 border-violet-500/30 border-t-violet-400"
+            className="h-10 w-10 animate-spin rounded-full border-2 border-orange-500/30 border-t-orange-400"
             aria-hidden
           />
-          <p className="text-sm text-zinc-500">Loading your study set…</p>
+          <p className="text-sm text-orange-500">Loading your study set…</p>
         </div>
       </NeuroShell>
     );
@@ -44,17 +44,17 @@ export default function ResultsPage() {
   return (
     <NeuroShell>
       <main className="space-y-10">
-        <header className="space-y-3 border-b border-white/10 pb-8">
+        <header className="space-y-3 border-b border-orange-500/10 pb-8">
           <button
             type="button"
             onClick={() => router.push("/")}
-            className="group inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-sm text-zinc-400 transition hover:border-white/20 hover:text-zinc-200"
+            className="group inline-flex items-center gap-2 rounded-full border border-orange-500/10 bg-orange-500/5 px-3 py-1.5 text-sm text-orange-400 transition hover:border-orange-500/20 hover:text-orange-200"
           >
-            <span className="transition group-hover:-translate-x-0.5">←</span> Back home
+            <span className="transition group-hover:-translate-x-0.5">←</span> Back to Kindling
           </button>
           <div>
-            <h1 className="text-balance text-2xl font-bold tracking-tight text-white sm:text-3xl">{output.title}</h1>
-            <p className="mt-2 text-sm text-violet-300/80">{formatLabel}</p>
+            <h1 className="text-balance text-2xl font-bold tracking-tight text-orange-500 sm:text-3xl">{output.title}</h1>
+            <p className="text-amber-400 text-sm font-medium">{formatLabel}</p>
           </div>
         </header>
 

@@ -4,18 +4,18 @@ import mermaid from "mermaid";
 
 mermaid.initialize({
   startOnLoad: false,
-  theme: "dark",
+  theme: "default",
   themeVariables: {
-    primaryColor: "#7c3aed",
-    primaryTextColor: "#f4f4f5",
-    primaryBorderColor: "#6d28d9",
-    lineColor: "#a1a1aa",
-    background: "#18181b",
-    mainBkg: "#27272a",
-    nodeBorder: "#7c3aed",
-    clusterBkg: "#3f3f46",
-    titleColor: "#f4f4f5",
-    edgeLabelBackground: "#3f3f46",
+    primaryColor: "#f97316",
+    primaryTextColor: "#1c1917",
+    primaryBorderColor: "#ea580c",
+    lineColor: "#78716c",
+    background: "#fafaf9",
+    mainBkg: "#ffffff",
+    nodeBorder: "#f97316",
+    clusterBkg: "#f5f5f4",
+    titleColor: "#1c1917",
+    edgeLabelBackground: "#ffffff",
   },
 });
 
@@ -34,7 +34,7 @@ export default function FlowDiagram({ mermaidCode }: { mermaidCode: string }) {
         }
       } catch {
         if (containerRef.current) {
-          containerRef.current.innerHTML = `<p class="text-red-400 text-sm">Could not render diagram. Raw output:<br/><pre class="mt-2 text-zinc-400 text-xs whitespace-pre-wrap break-all">${mermaidCode.replace(/</g, "&lt;")}</pre></p>`;
+          containerRef.current.innerHTML = `<p class="text-red-500 text-sm">Could not render diagram. Raw output:<br/><pre class="mt-2 text-stone-600 text-xs whitespace-pre-wrap break-all">${mermaidCode.replace(/</g, "&lt;")}</pre></p>`;
         }
       }
     };
@@ -43,10 +43,10 @@ export default function FlowDiagram({ mermaidCode }: { mermaidCode: string }) {
   }, [mermaidCode]);
 
   return (
-    <div className="overflow-x-auto rounded-3xl border border-white/10 bg-zinc-900/50 p-6 shadow-inner shadow-black/40 backdrop-blur-sm">
+    <div className="bg-white border border-stone-200 rounded-xl p-6 shadow-sm">
       <div
         ref={containerRef}
-        className="flex min-h-48 items-center justify-center text-sm text-zinc-500 [&_svg]:mx-auto [&_svg]:max-w-none"
+        className="flex min-h-48 items-center justify-center text-sm text-stone-500 [&_svg]:mx-auto [&_svg]:max-w-none"
       >
         Rendering diagram…
       </div>
