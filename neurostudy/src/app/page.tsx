@@ -113,7 +113,7 @@ export default function Home() {
                   marginBottom: 20,
                 }}
               >
-                Your AI-powered study companion
+                Ignite the way you learn.
               </p>
               <h1
                 style={{

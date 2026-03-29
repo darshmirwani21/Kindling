@@ -102,7 +102,7 @@ export default function InputForm({ onSubmit, loading }: InputFormProps) {
       </div>
 
       {/* ── URL input ──────────────────────────────────── */}
-      {inputType !== 'paste' && (
+      {(inputType === 'youtube' || inputType === 'article') && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
           <label
             style={{
@@ -114,121 +114,126 @@ export default function InputForm({ onSubmit, loading }: InputFormProps) {
               color: 'var(--text-muted)',
             }}
           >
-            {inputType === 'youtube' ? 'Paste a link' : 'Paste a link'}
+            Paste a link
           </label>
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 12,
-            background: 'var(--surface-2)',
-            border: urlFocus ? '1px solid var(--ember)' : borderStyle,
-            borderRadius: 12,
-            padding: '0 16px',
-            transition: 'border-color 0.2s',
-            boxShadow: urlFocus ? '0 0 0 3px var(--ember-glow)' : 'none',
-          }}
-        >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"
-            style={{ flexShrink: 0, color: urlFocus ? 'var(--ember)' : 'var(--text-muted)', transition: 'color 0.2s' }}>
-            <path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"
-              stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
-            <path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"
-              stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-          <input
-            type="url"
-            placeholder="YouTube, article, or any webpage URL…"
-            value={url}
-            onChange={(e) => setUrl(e.target.value)}
-            onFocus={() => setUrlFocus(true)}
-            onBlur={() => setUrlFocus(false)}
+          <div
             style={{
-              flex: 1,
-              background: 'transparent',
-              border: 'none',
-              outline: 'none',
-              fontFamily: 'var(--font-body)',
-              fontSize: 14,
-              color: 'var(--text-primary)',
-              padding: '14px 0',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 12,
+              background: 'var(--surface-2)',
+              border: urlFocus ? '1px solid var(--ember)' : borderStyle,
+              borderRadius: 12,
+              padding: '0 16px',
+              transition: 'border-color 0.2s',
+              boxShadow: urlFocus ? '0 0 0 3px var(--ember-glow)' : 'none',
             }}
-          />
-        </div>
-      </div>
-
-      {/* ── OR divider ─────────────────────────────────── */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-        <div style={{ flex: 1, height: 1, background: 'var(--border)' }} />
-        <span style={{
-          fontFamily: 'var(--font-body)',
-          fontSize: 11,
-          fontWeight: 600,
-          letterSpacing: '0.1em',
-          textTransform: 'uppercase',
-          color: 'var(--text-muted)',
-        }}>or upload a PDF</span>
-        <div style={{ flex: 1, height: 1, background: 'var(--border)' }} />
-      </div>
-
-      {/* ── PDF drop zone ──────────────────────────────── */}
-      <button
-        type="button"
-        onClick={() => fileRef.current?.click()}
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: 8,
-          padding: '24px 20px',
-          background: file ? 'var(--ember-dim)' : 'var(--surface-2)',
-          border: file ? '1px solid var(--ember)' : '1px dashed var(--border)',
-          borderRadius: 12,
-          cursor: 'pointer',
-          transition: 'all 0.2s',
-          width: '100%',
-        }}
-        onMouseEnter={(e) => {
-          if (!file) (e.currentTarget as HTMLButtonElement).style.borderColor = 'rgba(255,91,29,0.3)';
-        }}
-        onMouseLeave={(e) => {
-          if (!file) (e.currentTarget as HTMLButtonElement).style.borderColor = 'var(--border)';
-        }}
-      >
-        {file ? (
-          <>
-            <span style={{ fontSize: 20 }}>📄</span>
-            <span style={{ fontFamily: 'var(--font-body)', fontSize: 13, color: 'var(--ember)', fontWeight: 500 }}>
-              {file.name}
-            </span>
-            <span
-              style={{ fontFamily: 'var(--font-body)', fontSize: 11, color: 'var(--text-muted)', cursor: 'pointer' }}
-              onClick={(e) => { e.stopPropagation(); setFile(null); }}
-            >
-              Remove ×
-            </span>
-          </>
-        ) : (
-          <>
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"
-              style={{ color: 'var(--text-muted)' }}>
-              <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"
+              style={{ flexShrink: 0, color: urlFocus ? 'var(--ember)' : 'var(--text-muted)', transition: 'color 0.2s' }}>
+              <path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"
+                stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"
                 stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
-            <span style={{ fontFamily: 'var(--font-body)', fontSize: 13, color: 'var(--text-secondary)' }}>
-              Click to upload PDF
-            </span>
-          </>
-        )}
-        <input
-          ref={fileRef}
-          type="file"
-          accept=".pdf"
-          style={{ display: 'none' }}
-          onChange={(e) => setFile(e.target.files?.[0] ?? null)}
-        />
-      </button>
+            <input
+              type="url"
+              placeholder={inputType === "youtube" ? "Paste a YouTube URL…" : "Paste an article or webpage URL…"}
+              value={url}
+              onChange={(e) => setUrl(e.target.value)}
+              onFocus={() => setUrlFocus(true)}
+              onBlur={() => setUrlFocus(false)}
+              style={{
+                flex: 1,
+                background: 'transparent',
+                border: 'none',
+                outline: 'none',
+                fontFamily: 'var(--font-body)',
+                fontSize: 14,
+                color: 'var(--text-primary)',
+                padding: '14px 0',
+              }}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* ── OR divider ─────────────────────────────────── */}
+      {inputType === 'pdf' && (
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <div style={{ flex: 1, height: 1, background: 'var(--border)' }} />
+          <span style={{
+            fontFamily: 'var(--font-body)',
+            fontSize: 11,
+            fontWeight: 600,
+            letterSpacing: '0.1em',
+            textTransform: 'uppercase',
+            color: 'var(--text-muted)',
+          }}>or upload a PDF</span>
+          <div style={{ flex: 1, height: 1, background: 'var(--border)' }} />
+        </div>
+      )}
+
+      {/* ── PDF drop zone ──────────────────────────────── */}
+      {inputType === 'pdf' && (
+        <button
+          type="button"
+          onClick={() => fileRef.current?.click()}
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 8,
+            padding: '24px 20px',
+            background: file ? 'var(--ember-dim)' : 'var(--surface-2)',
+            border: file ? '1px solid var(--ember)' : '1px dashed var(--border)',
+            borderRadius: 12,
+            cursor: 'pointer',
+            transition: 'all 0.2s',
+            width: '100%',
+          }}
+          onMouseEnter={(e) => {
+            if (!file) (e.currentTarget as HTMLButtonElement).style.borderColor = 'rgba(255,91,29,0.3)';
+          }}
+          onMouseLeave={(e) => {
+            if (!file) (e.currentTarget as HTMLButtonElement).style.borderColor = 'var(--border)';
+          }}
+        >
+          {file ? (
+            <>
+              <span style={{ fontSize: 20 }}>📄</span>
+              <span style={{ fontFamily: 'var(--font-body)', fontSize: 13, color: 'var(--ember)', fontWeight: 500 }}>
+                {file.name}
+              </span>
+              <span
+                style={{ fontFamily: 'var(--font-body)', fontSize: 11, color: 'var(--text-muted)', cursor: 'pointer' }}
+                onClick={(e) => { e.stopPropagation(); setFile(null); }}
+              >
+                Remove ×
+              </span>
+            </>
+          ) : (
+            <>
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"
+                style={{ color: 'var(--text-muted)' }}>
+                <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"
+                  stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+              <span style={{ fontFamily: 'var(--font-body)', fontSize: 13, color: 'var(--text-secondary)' }}>
+                Click to upload PDF
+              </span>
+            </>
+          )}
+          <input
+            ref={fileRef}
+            type="file"
+            accept=".pdf"
+            style={{ display: 'none' }}
+            onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+          />
+        </button>
+      )}
 
       {/* ── Paste textarea ─────────────────────────── */}
       {inputType === 'paste' && (

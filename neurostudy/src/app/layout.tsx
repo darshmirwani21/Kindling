@@ -16,9 +16,9 @@ const outfit = Outfit({
 });
 
 export const metadata: Metadata = {
-  title: 'Kindling — Ignite the way you learn.',
+  title: 'Kindling',
   description:
-    'Drop in any YouTube video, PDF, or article. Kindling turns it into flashcards, summaries, Q&A, or a flow diagram — instantly.',
+    'Drop in any YouTube video, PDF, or article. Kindling turns it into flashcards, summaries, Q&A, or a flow diagram',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

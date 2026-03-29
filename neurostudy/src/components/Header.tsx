@@ -8,10 +8,13 @@ export default function Header({ onHistoryOpen }: HeaderProps) {
       style={{ position: 'relative', zIndex: 10 }}
       className="flex items-center justify-between px-6 py-5 md:px-12"
     >
-      {/* Logo lockup */}
-      <div className="flex items-center gap-3">
-        {/* Flame SVG */}
-        <svg width="28" height="34" viewBox="0 0 28 34" fill="none" aria-hidden="true">
+      {/* Logo lockup — shifted down and right, scaled up */}
+      <div
+        className="flex items-center gap-3"
+        style={{ marginLeft: 18, marginTop: 10 }}
+      >
+        {/* Flame SVG — scaled up from 28×34 to 36×44 */}
+        <svg width="36" height="44" viewBox="0 0 28 34" fill="none" aria-hidden="true">
           <defs>
             <linearGradient id="hfg1" x1="14" y1="2" x2="14" y2="32" gradientUnits="userSpaceOnUse">
               <stop offset="0%"   stopColor="#ef4444" />
@@ -27,9 +30,10 @@ export default function Header({ onHistoryOpen }: HeaderProps) {
           <path d="M14 13c0 0-4 4.5-4 7.5a4 4 0 008 0c0-2-1.5-4-1.5-4s-.5 2-2 2.5c0 0 1-3-0.5-6z" fill="url(#hfg2)" opacity="0.9"/>
           <ellipse cx="14" cy="23.5" rx="2.2" ry="2.8" fill="#FEF9C3" opacity="0.85"/>
         </svg>
+        {/* Brand name — bumped from text-xl to text-2xl */}
         <span
-          style={{ fontFamily: 'var(--font-display)', fontStyle: 'italic', fontWeight: 400 }}
-          className="text-xl tracking-tight"
+          style={{ fontFamily: 'var(--font-display)', fontStyle: 'italic', fontWeight: 400, fontSize: '1.5rem' }}
+          className="tracking-tight"
           aria-label="Kindling"
         >
           <span style={{ color: 'var(--text-primary)' }}>kind</span>
@@ -37,7 +41,7 @@ export default function Header({ onHistoryOpen }: HeaderProps) {
         </span>
       </div>
 
-      {/* History button */}
+      {/* History button — slightly larger */}
       {onHistoryOpen && (
         <button
           type="button"
@@ -45,10 +49,10 @@ export default function Header({ onHistoryOpen }: HeaderProps) {
           title="Recent sessions"
           style={{
             background: 'none', border: '1px solid var(--border)',
-            borderRadius: 8, cursor: 'pointer', padding: '6px 10px',
+            borderRadius: 8, cursor: 'pointer', padding: '9px 16px',
             color: 'var(--text-secondary)', transition: 'all 0.15s',
-            display: 'flex', alignItems: 'center', gap: 6,
-            fontFamily: 'var(--font-body)', fontSize: 12,
+            display: 'flex', alignItems: 'center', gap: 7,
+            fontFamily: 'var(--font-body)', fontSize: 14,
           }}
           onMouseEnter={(e) => {
             (e.currentTarget as HTMLButtonElement).style.borderColor = 'var(--border-hover)';
