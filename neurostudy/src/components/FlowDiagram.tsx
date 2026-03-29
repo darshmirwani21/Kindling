@@ -1,55 +1,60 @@
-"use client";
-import { useEffect, useRef } from "react";
-import mermaid from "mermaid";
+'use client';
+import { useEffect, useRef } from 'react';
+import mermaid from 'mermaid';
 
 mermaid.initialize({
   startOnLoad: false,
-  theme: "default",
+  theme: 'dark',
   themeVariables: {
-    primaryColor: "#f97316",
-    primaryTextColor: "#1c1917",
-    primaryBorderColor: "#ea580c",
-    lineColor: "#78716c",
-    background: "#fafaf9",
-    mainBkg: "#ffffff",
-    nodeBorder: "#f97316",
-    clusterBkg: "#f5f5f4",
-    titleColor: "#1c1917",
-    edgeLabelBackground: "#ffffff",
+    primaryColor: '#FF5B1D',
+    primaryTextColor: '#F5F0EB',
+    primaryBorderColor: '#E04510',
+    lineColor: '#5C5148',
+    background: '#0E0C0B',
+    mainBkg: '#161210',
+    nodeBorder: '#FF5B1D',
+    clusterBkg: '#1E1A17',
+    titleColor: '#F5F0EB',
+    edgeLabelBackground: '#1E1A17',
   },
 });
 
 export default function FlowDiagram({ mermaidCode }: { mermaidCode: string }) {
-  const containerRef = useRef<HTMLDivElement>(null);
+  const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!containerRef.current || !mermaidCode) return;
-
-    const render = async () => {
+    if (!ref.current || !mermaidCode) return;
+    (async () => {
       try {
-        const id = `mermaid-${Date.now()}`;
-        const { svg } = await mermaid.render(id, mermaidCode);
-        if (containerRef.current) {
-          containerRef.current.innerHTML = svg;
-        }
+        const { svg } = await mermaid.render(`mm-${Date.now()}`, mermaidCode);
+        if (ref.current) ref.current.innerHTML = svg;
       } catch {
-        if (containerRef.current) {
-          containerRef.current.innerHTML = `<p class="text-red-500 text-sm">Could not render diagram. Raw output:<br/><pre class="mt-2 text-stone-600 text-xs whitespace-pre-wrap break-all">${mermaidCode.replace(/</g, "&lt;")}</pre></p>`;
-        }
+        if (ref.current)
+          ref.current.innerHTML = `<pre style="color:var(--text-muted);font-size:12px;white-space:pre-wrap;word-break:break-all">${mermaidCode}</pre>`;
       }
-    };
-
-    render();
+    })();
   }, [mermaidCode]);
 
   return (
-    <div className="bg-white border border-stone-200 rounded-xl p-6 shadow-sm">
+    <div style={{
+      padding: 24,
+      background: 'var(--surface)',
+      border: '1px solid var(--border)',
+      borderRadius: 16,
+      overflowX: 'auto',
+    }}>
       <div
-        ref={containerRef}
-        className="flex min-h-48 items-center justify-center text-sm text-stone-500 [&_svg]:mx-auto [&_svg]:max-w-none"
-      >
-        Rendering diagram…
-      </div>
+        ref={ref}
+        style={{
+          minHeight: 160,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          color: 'var(--text-muted)',
+          fontFamily: 'var(--font-body)',
+          fontSize: 13,
+        }}
+      >Rendering diagram…</div>
     </div>
   );
 }

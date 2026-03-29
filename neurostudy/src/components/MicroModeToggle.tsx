@@ -1,30 +1,63 @@
-interface MicroModeToggleProps {
+'use client';
+
+interface Props {
   enabled: boolean;
   onChange: (val: boolean) => void;
 }
 
-export default function MicroModeToggle({ enabled, onChange }: MicroModeToggleProps) {
+export default function MicroModeToggle({ enabled, onChange }: Props) {
   return (
-    <div className="flex items-center gap-3">
-      <span className="text-sm font-medium text-stone-600">Micro Mode</span>
-      <button
-        type="button"
-        role="switch"
-        aria-checked={enabled}
-        onClick={() => onChange(!enabled)}
-        className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 ${
-          enabled ? 'bg-orange-500' : 'bg-stone-300'
-        }`}
+    <button
+      type="button"
+      role="switch"
+      aria-checked={enabled}
+      onClick={() => onChange(!enabled)}
+      className="flex items-center gap-3 group"
+      style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
+    >
+      {/* Track */}
+      <span
+        style={{
+          position: 'relative',
+          display: 'inline-flex',
+          width: 44,
+          height: 24,
+          borderRadius: 12,
+          background: enabled ? 'var(--ember)' : 'var(--surface-3)',
+          border: enabled ? '1px solid var(--ember)' : '1px solid var(--border)',
+          transition: 'background 0.2s, border-color 0.2s',
+          flexShrink: 0,
+          boxShadow: enabled ? '0 0 10px rgba(255,91,29,0.25)' : 'none',
+        }}
       >
+        {/* Knob */}
         <span
-          className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
-            enabled ? 'translate-x-5' : 'translate-x-0'
-          }`}
+          style={{
+            position: 'absolute',
+            top: 2,
+            left: enabled ? 22 : 2,
+            width: 18,
+            height: 18,
+            borderRadius: '50%',
+            background: '#fff',
+            transition: 'left 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+            boxShadow: '0 1px 3px rgba(0,0,0,0.3)',
+          }}
         />
-      </button>
-      {enabled && (
-        <span className="text-xs text-orange-500 font-medium">On</span>
-      )}
-    </div>
+      </span>
+      {/* Label */}
+      <span
+        style={{
+          fontFamily: 'var(--font-body)',
+          fontSize: 13,
+          fontWeight: 500,
+          color: enabled ? 'var(--ember)' : 'var(--text-secondary)',
+          transition: 'color 0.2s',
+          letterSpacing: '0.02em',
+        }}
+      >
+        ✂️ Micro Mode
+      </span>
+    </button>
   );
 }

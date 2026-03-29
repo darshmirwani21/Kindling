@@ -1,24 +1,30 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+import { Fraunces, Outfit } from 'next/font/google';
 import './globals.css';
 
-const inter = Inter({ subsets: ['latin'] });
+const fraunces = Fraunces({
+  subsets: ['latin'],
+  weight: ['300', '400', '700', '900'],
+  style: ['normal', 'italic'],
+  variable: '--font-display',
+});
+
+const outfit = Outfit({
+  subsets: ['latin'],
+  weight: ['300', '400', '500', '600'],
+  variable: '--font-body',
+});
 
 export const metadata: Metadata = {
-  title: 'Kindling',
-  description: 'Ignite the way you learn.',
+  title: 'Kindling — Ignite the way you learn.',
+  description:
+    'Drop in any YouTube video, PDF, or article. Kindling turns it into flashcards, summaries, Q&A, or a flow diagram — instantly.',
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
-      <body className={`${inter.className} bg-stone-50 text-stone-900 min-h-screen`}>
-        {children}
-      </body>
+    <html lang="en" className={`${fraunces.variable} ${outfit.variable}`}>
+      <body>{children}</body>
     </html>
   );
 }

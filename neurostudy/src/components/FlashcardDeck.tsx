@@ -1,73 +1,137 @@
-"use client";
-import { useState } from "react";
-import { Flashcard } from "@/lib/types";
+'use client';
+import { useState } from 'react';
+import { Flashcard } from '@/lib/types';
 
 export default function FlashcardDeck({ cards }: { cards: Flashcard[] }) {
-  const [index, setIndex] = useState(0);
+  const [index, setIndex]     = useState(0);
   const [flipped, setFlipped] = useState(false);
-
+  if (!cards.length) return null;
   const card = cards[index];
 
   return (
-    <div className="space-y-8">
-      <div className="flex items-center justify-between text-sm text-stone-500">
-        <span>
-          Card <span className="font-medium text-stone-700">{index + 1}</span> of{" "}
-          <span className="font-medium text-stone-700">{cards.length}</span>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+      {/* Counter */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <span style={{ fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--text-muted)', letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+          Card {index + 1} <span style={{ color: 'var(--border)' }}>/</span> {cards.length}
         </span>
-        <span className="rounded-full bg-stone-100 px-2 py-0.5 text-xs text-stone-500">Tap to flip</span>
+        {/* Progress bar */}
+        <div style={{ width: 120, height: 3, background: 'var(--surface-3)', borderRadius: 3, overflow: 'hidden' }}>
+          <div style={{
+            height: '100%',
+            width: `${((index + 1) / cards.length) * 100}%`,
+            background: 'var(--ember)',
+            borderRadius: 3,
+            transition: 'width 0.3s ease',
+          }} />
+        </div>
       </div>
 
-      <div className="[perspective:1200px]">
-        <button
-          type="button"
+      {/* Card */}
+      <div className="flip-container" style={{ minHeight: 220 }}>
+        <div
+          className={`flip-card${flipped ? ' flipped' : ''}`}
+          style={{ position: 'relative', minHeight: 220 }}
           onClick={() => setFlipped(!flipped)}
-          className="relative min-h-[14rem] w-full text-left outline-none focus-visible:ring-2 focus-visible:ring-orange-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
         >
+          {/* Front */}
           <div
-            className="relative min-h-[14rem] w-full transition-transform duration-500 [transform-style:preserve-3d]"
-            style={{ transform: flipped ? "rotateY(180deg)" : "rotateY(0deg)" }}
+            className="flip-face"
+            style={{
+              position: flipped ? 'absolute' : 'relative',
+              inset: 0,
+              minHeight: 220,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: '36px 32px',
+              background: 'var(--surface)',
+              border: '1px solid var(--border)',
+              borderRadius: 16,
+              cursor: 'pointer',
+              textAlign: 'center',
+            }}
           >
-            <div className="absolute inset-0 flex min-h-[14rem] flex-col items-center justify-center rounded-2xl border border-stone-200 bg-white p-8 text-center shadow-sm [backface-visibility:hidden]">
-              <p className="mb-3 text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-orange-500">
-                Question
-              </p>
-              <p className="text-pretty text-lg font-medium leading-snug text-stone-900 sm:text-xl">{card.front}</p>
-              <p className="mt-6 text-xs text-stone-500">Tap to reveal answer</p>
-            </div>
-            <div className="absolute inset-0 flex min-h-[14rem] flex-col items-center justify-center rounded-2xl border border-orange-200 bg-orange-50 p-8 text-center shadow-sm [backface-visibility:hidden] [transform:rotateY(180deg)]">
-              <p className="mb-3 text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-orange-600">
-                Answer
-              </p>
-              <p className="text-pretty text-lg font-medium leading-relaxed text-stone-900 sm:text-xl">{card.back}</p>
-            </div>
+            <span style={{
+              fontFamily: 'var(--font-body)',
+              fontSize: 10,
+              fontWeight: 700,
+              letterSpacing: '0.14em',
+              textTransform: 'uppercase',
+              color: 'var(--ember)',
+              marginBottom: 16,
+            }}>Question</span>
+            <p style={{ fontFamily: 'var(--font-display)', fontSize: 20, fontWeight: 400, color: 'var(--text-primary)', lineHeight: 1.4 }}>
+              {card.front}
+            </p>
+            <span style={{ marginTop: 20, fontFamily: 'var(--font-body)', fontSize: 11, color: 'var(--text-muted)' }}>
+              Tap to reveal
+            </span>
           </div>
-        </button>
+
+          {/* Back */}
+          <div
+            className="flip-face flip-back"
+            style={{
+              position: 'absolute',
+              inset: 0,
+              minHeight: 220,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: '36px 32px',
+              background: 'var(--surface-2)',
+              border: '1px solid var(--border-hover)',
+              borderRadius: 16,
+              cursor: 'pointer',
+              textAlign: 'center',
+            }}
+          >
+            <span style={{
+              fontFamily: 'var(--font-body)',
+              fontSize: 10,
+              fontWeight: 700,
+              letterSpacing: '0.14em',
+              textTransform: 'uppercase',
+              color: 'var(--ember)',
+              marginBottom: 16,
+            }}>Answer</span>
+            <p style={{ fontFamily: 'var(--font-body)', fontSize: 16, fontWeight: 400, color: 'var(--text-primary)', lineHeight: 1.6 }}>
+              {card.back}
+            </p>
+          </div>
+        </div>
       </div>
 
-      <div className="flex gap-3">
+      {/* Nav */}
+      <div style={{ display: 'flex', gap: 10 }}>
         <button
           type="button"
-          onClick={() => {
-            setIndex(Math.max(0, index - 1));
-            setFlipped(false);
-          }}
+          onClick={() => { setIndex(Math.max(0, index - 1)); setFlipped(false); }}
           disabled={index === 0}
-          className="flex-1 rounded-xl border border-stone-200 bg-white py-3.5 text-sm font-medium text-stone-600 transition hover:bg-stone-50 disabled:cursor-not-allowed disabled:opacity-35"
-        >
-          ← Previous
-        </button>
+          style={{
+            flex: 1, padding: '12px 0', borderRadius: 10,
+            background: 'var(--surface-2)', border: '1px solid var(--border)',
+            color: index === 0 ? 'var(--text-muted)' : 'var(--text-secondary)',
+            fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 500,
+            cursor: index === 0 ? 'not-allowed' : 'pointer', transition: 'all 0.15s',
+          }}
+        >← Prev</button>
         <button
           type="button"
-          onClick={() => {
-            setIndex(Math.min(cards.length - 1, index + 1));
-            setFlipped(false);
-          }}
+          onClick={() => { setIndex(Math.min(cards.length - 1, index + 1)); setFlipped(false); }}
           disabled={index === cards.length - 1}
-          className="flex-1 rounded-xl bg-orange-500 py-3.5 text-sm font-semibold text-white shadow-sm hover:bg-orange-600 disabled:cursor-not-allowed disabled:opacity-35"
-        >
-          Next →
-        </button>
+          style={{
+            flex: 1, padding: '12px 0', borderRadius: 10,
+            background: index === cards.length - 1 ? 'var(--surface-2)' : 'var(--ember)',
+            border: '1px solid transparent',
+            color: index === cards.length - 1 ? 'var(--text-muted)' : '#fff',
+            fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 600,
+            cursor: index === cards.length - 1 ? 'not-allowed' : 'pointer', transition: 'all 0.15s',
+          }}
+        >Next →</button>
       </div>
     </div>
   );
